@@ -1,0 +1,39 @@
+#Read the dataset
+import pandas as pd
+df = pd.read_csv("Automobile_data.csv")
+
+#Check for missing data in columns
+df.isnull().sum()
+df["normalized-losses"].value_counts() #check if any missing values present
+
+#Replace ? with mean and mode
+def clean_numerical(column):
+    mean = df[df[column]!="?"][column].astype(float).mean()
+    df[column] = df[column].str.replace("?", str(mean)).astype(float)
+    return df
+
+def clean_categorical(column):
+    mode=df[df[column]!="?"][column].mode()
+    df[column] = df[column].str.replace("?",str(mode))
+    return df
+
+#seperating independent and dependent variables
+X = df.drop(["price"],1)
+y = df["price"]
+
+#seperating numerical and categorical data
+categorical = X.select_dtypes(exclude = np.number)
+numerical = X.select_dtypes(include = np.number)
+
+#one hot encoding
+categorical = pd.get_dummies(categorical)
+
+#Scaling data
+from sklearn.preprocessing import MinMaxScaler
+scaler = MinMaxScaler()
+cols = list(numerical)
+numerical = scaler.fit_transform(numerical)
+numerical = pd.DataFrame(numerical,columns=cols)
+
+#combinig the data
+df = pd.concat([numerical,categorical],1)
