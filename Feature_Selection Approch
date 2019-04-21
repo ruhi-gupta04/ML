@@ -1,0 +1,12 @@
+
+
+                              Output
+                 |   Continuous    |    Categorical
+             ----------------------|-------------------
+                 |                 |
+ I   Continuous  |  Filter method  |      LDA
+ N               |                 |
+ P     --------------------------- |-------------------
+ U               |                 |   
+ T   Categorical |      ANOVA      |    Chi-Square                             
+                 |                 |
