@@ -1,0 +1,66 @@
+FILTER METHOD
+import seaborn as sns
+import matplotlib.pyplot as plt
+from sklearn.feature_selection import RFE
+from sklearn.model_selection import GridSearchCV, train_test_split as tts
+
+plt.figure(figsize=(16,8))
+sns.heatmap(df.corr(),annot=True)
+
+
+
+RFE
+from sklearn.feature_selection import RFE
+from sklearn.linear_model import LinearRegression
+reg=LinearRegression()
+
+rfe = RFE(reg,9)
+rfe = rfe.fit(X,Y)
+rfe.support_
+
+cols=list(X)
+cols=pd.Series(cols)
+cols[rfe.support_]
+
+features=["Year","Present_Price"]
+
+reg.fit(x_train[features],y_train)
+y_pred=reg.predict(x_test[features])
+r2_score(y_test,y_pred)
+
+
+
+SM MODELS
+#feature selction with wrapper method
+import statsmodels.api as sm
+X = sm.add_constant(X)
+model = sm.OLS(Y,X).fit()
+model.summary()
+
+X = X.drop(["const"],1)
+
+cols = list(X)
+p_max = 1
+while (len(cols)>0):
+    p=[]
+    X_1= X[cols]
+    X_1 = sm.add_constant(X_1)
+    model = sm.OLS(Y,X_1).fit()
+    p = list(model.pvalues.values[1:])
+    p = pd.Series(p,index = cols)
+    p_max = max(p)
+    features_with_p_max = p.idxmax()
+    if (p_max>0.05):
+        cols.remove(features_with_p_max)
+    else:
+        break
+selected_features = cols
+
+selected_features
+
+features_sm=["Year","Present_Price","Kms_Driven","Fuel_Type_CNG","Fuel_Type_Diesel","Fuel_Type_Petrol","Seller_Type_Dealer","Seller_Type_Individual","Transmission_Automatic","Transmission_Manual"]
+
+reg=LinearRegression()
+reg.fit(x_train[features_sm],y_train)
+y_pred=reg.predict(x_test[features_sm])
+r2_score(y_test,y_pred)
